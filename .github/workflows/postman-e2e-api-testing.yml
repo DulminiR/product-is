@@ -3,9 +3,9 @@ name: WSO2 IS Postman Tests
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ API_Test_Suite ]
   pull_request:
-    branches: [ main ]
+    branches: [ API_Test_Suite ]
 
 env:
   MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.class=standard -Dmaven.wagon.http.retryHandler.count=3
