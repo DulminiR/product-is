@@ -1,0 +1,79 @@
+name: WSO2 IS Postman Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  MAVEN_OPTS: -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.http.retryHandler.class=standard -Dmaven.wagon.http.retryHandler.count=3
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "adopt"
+
+      - name: Cache maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      # Build WSO2 IS
+      - name: Build WSO2 IS
+        run: |
+          mvn clean install -Dmaven.test.skip=true --batch-mode | tee mvn-build.log
+
+      # Extract and Start WSO2 IS Server
+      - name: Extract and Start WSO2 IS
+        run: |
+          cd modules/distribution/target/
+          unzip wso2is-7.0.0.zip
+          cd wso2is-7.0.0/bin/
+          chmod +x wso2server.sh
+          ./wso2server.sh start
+          echo "Waiting for server to start..."
+          timeout 300 bash -c 'while ! nc -z localhost 9443; do sleep 1; done'
+          echo "Server started"
+
+      # Install and run Postman tests
+      - name: Install Newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Run Postman Collection
+        run: |
+          newman run ./api-testing-postman-collections/collection02.json \
+          --reporters cli,htmlextra \
+          --reporter-htmlextra-export testResults/htmlreport.html
+
+      # Archive test results
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            testResults/
+            target/surefire-reports/
+          if-no-files-found: warn
+
+      # Stop WSO2 IS
+      - name: Stop WSO2 IS
+        if: always()
+        run: |
+          cd modules/distribution/target/wso2is-7.0.0/bin/
+          ./wso2server.sh stop
+          echo "Server stopped"
