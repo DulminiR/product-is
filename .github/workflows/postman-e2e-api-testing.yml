@@ -51,7 +51,7 @@ jobs:
 
       - name: Run Postman Collection
         run: |
-          newman run ./api-testing-postman-collections/collection01.json \
+          newman run ./api-testing-postman-collections/collection02.json --insecure \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export testResults/htmlreport.html
 
