@@ -55,14 +55,14 @@ jobs:
           newman run ./api-testing-postman-collections/collection01.json --insecure \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export testResults/htmlreport.html
-          continue-on-error: true
+        continue-on-error: true
 
       - name: Run Postman Collection 02
         run: |
           newman run ./api-testing-postman-collections/collection02.json --insecure \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export testResults/htmlreport.html
-          continue-on-error: true
+        continue-on-error: true
 
       # Archive test results
       - name: Archive test results
