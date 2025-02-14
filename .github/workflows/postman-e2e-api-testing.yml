@@ -53,11 +53,11 @@ jobs:
 
       # Make script excutable
       - name: Make script executable
-        run: chmod +x scripts/create_and_assign_api_resources.sh
+        run: chmod +x api-testing-postman-collections/create_and_assign_api_resources.sh
 
       # Run the script
       - name: Run Test Script
-        run: ./scripts/create_and_assign_api_resources.sh 
+        run: ./api-testing-postman-collections/create_and_assign_api_resources.sh 
 
       # Install and run Postman tests
       - name: Install Newman
