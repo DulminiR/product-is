@@ -31,17 +31,33 @@ jobs:
         run: |
           mvn clean install --batch-mode -Dmaven.test.skip=true | tee mvn-build.log
 
-      # Extract and Start WSO2 IS Server
+      - name: Get IS zip file name
+        id: get-zip
+        run: |
+            zip_file=$(find . -name 'wso2is-*.zip' -type f -not -name 'wso2is-*-src.zip' -print -quit)
+            # Get just the filename without .zip
+            dir_name=$(basename "$zip_file" .zip)
+            echo "ZIP_FILE=${zip_file}" >> $GITHUB_OUTPUT
+            echo "DIR_NAME=${dir_name}" >> $GITHUB_OUTPUT
+        
       - name: Extract and Start WSO2 IS
         run: |
-          cd modules/distribution/target/
-          unzip wso2is-7.1.0-beta2-SNAPSHOT.zip
-          cd wso2is-7.1.0-beta2-SNAPSHOT/bin/
-          chmod +x wso2server.sh
-          ./wso2server.sh start
-          echo "Waiting for server to start..."
-          timeout 300 bash -c 'while ! nc -z localhost 9443; do sleep 1; done'
-          echo "Server started"
+            cd modules/distribution/target/
+            unzip ${{ steps.get-zip.outputs.DIR_NAME }}.zip
+            cd ${{ steps.get-zip.outputs.DIR_NAME }}/bin/
+            chmod +x wso2server.sh
+            ./wso2server.sh start
+            echo "Waiting for server to start..."
+            timeout 300 bash -c 'while ! nc -z localhost 9443; do sleep 1; done'
+            echo "Server started"
+
+      # Make script excutable
+      - name: Make script executable
+        run: chmod +x scripts/create_and_assign_api_resources.sh
+
+      # Run the script
+      - name: Run Test Script
+        run: ./scripts/create_and_assign_api_resources.sh 
 
       # Install and run Postman tests
       - name: Install Newman
@@ -79,6 +95,6 @@ jobs:
       - name: Stop WSO2 IS
         if: always()
         run: |
-          cd modules/distribution/target/wso2is-7.1.0-beta2-SNAPSHOT/bin/
+          cd modules/distribution/target/${{ steps.get-zip.outputs.DIR_NAME }}/bin/
           ./wso2server.sh stop
           echo "Server stopped"
