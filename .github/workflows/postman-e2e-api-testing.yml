@@ -35,8 +35,8 @@ jobs:
       - name: Extract and Start WSO2 IS
         run: |
           cd modules/distribution/target/
-          unzip wso2is-7.1.0-alpha2-SNAPSHOT.zip
-          cd wso2is-7.1.0-alpha2-SNAPSHOT/bin/
+          unzip wso2is-7.1.0-beta2-SNAPSHOT.zip
+          cd wso2is-7.1.0-beta2-SNAPSHOT/bin/
           chmod +x wso2server.sh
           ./wso2server.sh start
           echo "Waiting for server to start..."
@@ -79,6 +79,6 @@ jobs:
       - name: Stop WSO2 IS
         if: always()
         run: |
-          cd modules/distribution/target/wso2is-7.1.0-alpha2-SNAPSHOT/bin/
+          cd modules/distribution/target/wso2is-7.1.0-beta2-SNAPSHOT/bin/
           ./wso2server.sh stop
           echo "Server stopped"
