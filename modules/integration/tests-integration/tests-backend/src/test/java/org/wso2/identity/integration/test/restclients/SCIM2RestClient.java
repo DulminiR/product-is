@@ -183,6 +183,24 @@ public class SCIM2RestClient extends RestBaseClient {
     }
 
     /**
+     * Update the details of an existing user.
+     *
+     * @param patchUserInfo User patch request object.
+     * @param userId        Id of the user.
+     * @return JSONObject of the Closaeable HTTP response.
+     * @throws IOException If an error occurred while updating a user.
+     */
+    public JSONObject updateUserAndReturnResponse(PatchOperationRequestObject patchUserInfo, String userId) throws Exception {
+
+        String jsonRequest = toJSONString(patchUserInfo);
+        String endPointUrl = getUsersPath() + PATH_SEPARATOR + userId;
+
+        try (CloseableHttpResponse response = getResponseOfHttpPatch(endPointUrl, jsonRequest, getHeaders())) {
+            return getJSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
+        }
+    }
+
+    /**
      * Update the details of an existing user of a sub organization.
      *
      * @param patchUserInfo    User patch request object.
@@ -208,27 +226,35 @@ public class SCIM2RestClient extends RestBaseClient {
      *
      * @param patchUserInfo User patch request object.
      * @param userId        Id of the user.
+     * @return JSONObject of the Closaeable HTTP response.
      * @throws IOException If an error occurred while updating a user.
      */
-    public void updateUserWithBearerToken(PatchOperationRequestObject patchUserInfo, String userId, String bearerToken) throws IOException {
+    public JSONObject updateUserWithBearerToken(PatchOperationRequestObject patchUserInfo, String userId, String bearerToken) throws Exception {
 
         String jsonRequest = toJSONString(patchUserInfo);
         String endPointUrl = getUsersPath() + PATH_SEPARATOR + userId;
 
         try (CloseableHttpResponse response = getResponseOfHttpPatch(endPointUrl, jsonRequest, getHeadersWithBearerToken(bearerToken))) {
-            Assert.assertEquals(response.getStatusLine().getStatusCode(), HttpServletResponse.SC_OK,
-                    "User update failed");
+            return getJSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
         }
     }
 
-    public void updateUserMe(PatchOperationRequestObject patchUserInfo, String username, String password) throws IOException {
+    /**
+     * Update the details of an existing user.
+     *
+     * @param patchUserInfo User patch request object.
+     * @param username      username of the user.
+     * @param password      password of the user.
+     * @return JSONObject of the Closaeable HTTP response.
+     * @throws IOException If an error occurred while updating a user.
+     */
+    public JSONObject updateUserMe(PatchOperationRequestObject patchUserInfo, String username, String password) throws Exception {
 
         String jsonRequest = toJSONString(patchUserInfo);
         String endPointUrl = getUsersMePath();
 
         try (CloseableHttpResponse response = getResponseOfHttpPatch(endPointUrl, jsonRequest, getHeadersForSCIMME(username, password))) {
-            Assert.assertEquals(response.getStatusLine().getStatusCode(), HttpServletResponse.SC_OK,
-                    "User Me update failed");
+            return getJSONObject(EntityUtils.toString(response.getEntity(), "UTF-8"));
         }
     }
 
@@ -512,6 +538,77 @@ public class SCIM2RestClient extends RestBaseClient {
             Thread.sleep(POLLING_INTERVAL_MILLIS);
         }
         return false;
+    }
+
+    /**
+     * Attempt to create a user and return the response status code.
+     *
+     * @param userInfo object with user creation details.
+     * @return Response status code and user ID (if created successfully)
+     * @throws Exception If an error occurred while making the request
+     */
+    public CreateUserResponse attemptUserCreation(UserObject userInfo) throws Exception {
+
+        String jsonRequest = toJSONString(userInfo);
+        if (userInfo.getScimSchemaExtensionEnterprise() != null) {
+            jsonRequest = jsonRequest.replace(SCIM_SCHEMA_EXTENSION_ENTERPRISE, USER_ENTERPRISE_SCHEMA);
+        }
+        if (userInfo.getScimSchemaExtensionSystem() != null) {
+            jsonRequest = jsonRequest.replace(SCIM_SCHEMA_EXTENSION_SYSTEM, USER_SYSTEM_SCHEMA);
+        }
+
+        try (CloseableHttpResponse response = getResponseOfHttpPost(getUsersPath(), jsonRequest, getHeaders())) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            String userId = null;
+            if (statusCode == HttpServletResponse.SC_CREATED) {
+                JSONObject jsonResponse = getJSONObject(EntityUtils.toString(response.getEntity()));
+                userId = jsonResponse.get("id").toString();
+            }
+            return new CreateUserResponse(statusCode, userId);
+        }
+    }
+
+    /**
+     * Attempt to update a user and return the response status code.
+     *
+     * @param patchUserInfo Patch operations to update user
+     * @param userId        ID of the user to update
+     * @return Response status code
+     * @throws IOException If an error occurred while making the request
+     */
+    public int attemptUserUpdate(PatchOperationRequestObject patchUserInfo, String userId) throws IOException {
+
+        String jsonRequest = toJSONString(patchUserInfo);
+        String endPointUrl = getUsersPath() + PATH_SEPARATOR + userId;
+
+        try (CloseableHttpResponse response = getResponseOfHttpPatch(endPointUrl, jsonRequest, getHeaders())) {
+            return response.getStatusLine().getStatusCode();
+        }
+    }
+
+    /**
+     * Response object for user creation attempts
+     */
+    public static class CreateUserResponse {
+
+        private final int statusCode;
+        private final String userId;
+
+        public CreateUserResponse(int statusCode, String userId) {
+
+            this.statusCode = statusCode;
+            this.userId = userId;
+        }
+
+        public int getStatusCode() {
+
+            return statusCode;
+        }
+
+        public String getUserId() {
+
+            return userId;
+        }
     }
 
     private Header[] getHeaders() {
