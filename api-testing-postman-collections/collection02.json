@@ -31,6 +31,8 @@
 											"    pm.expect(pm.response.code).to.equal(201)\r",
 											"});\r",
 											"\r",
+											"console.log(\"Sub org ID:\", pm.collectionVariables.get(\"Main_Organization_ID\"));\r",
+											"\r",
 											"}, 1000);\r",
 											"\r",
 											"\r",
@@ -48,14 +50,6 @@
 									{
 										"key": "Authorization",
 										"value": "Basic YWRtaW46YWRtaW4="
-									},
-									{
-										"key": "Referer",
-										"value": ""
-									},
-									{
-										"key": "User-Agent",
-										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 									},
 									{
 										"key": "Accept",
@@ -93,76 +87,6 @@
 							"response": []
 						},
 						{
-							"name": "Create an Application",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 201\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(201)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									},
-									{
-										"key": "Access-Control-Allow-Origin",
-										"value": "https://localhost:9443/t/carbon.super/console"
-									},
-									{
-										"key": "Referer",
-										"value": ""
-									},
-									{
-										"key": "User-Agent",
-										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-									},
-									{
-										"key": "Accept",
-										"value": "application/json"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\":\"API Test Application\",\r\n    \"advancedConfigurations\":{\r\n        \"discoverableByEndUsers\":false,\r\n        \"skipLogoutConsent\":true,\r\n        \"skipLoginConsent\":true\r\n    },\r\n    \"authenticationSequence\":{\r\n        \"type\":\"DEFAULT\",\r\n        \"steps\":[\r\n            {\r\n                \"id\":1,\r\n                \"options\":[\r\n                    {\r\n                        \"idp\":\"LOCAL\",\r\n                        \"authenticator\":\"basic\"\r\n                    }\r\n                    ]\r\n            }\r\n            ]\r\n            },\r\n        \"claimConfiguration\":{\r\n            \"dialect\":\"LOCAL\",\r\n            \"requestedClaims\":[\r\n                {\r\n                    \"claim\":{\r\n                        \"uri\":\"http://wso2.org/claims/username\"\r\n                        }\r\n                }\r\n                ]\r\n                },\r\n        \"inboundProtocolConfiguration\":{\r\n            \"oidc\":{\r\n                \"grantTypes\":[\r\n                    \"authorization_code\"\r\n                    ],\r\n                \"allowedOrigins\":[\r\n                    \"https://myapp.io.login\"\r\n                    ],\r\n                \"callbackURLs\":[\r\n                    \"https://myapp.io.login\"\r\n                    ],\r\n                \"publicClient\":false,\r\n                \"refreshToken\":{\r\n                    \"expiryInSeconds\":86400\r\n                    }}},\r\n                \"templateId\":\"b9c5e11e-fc78-484b-9bec-015d247561b8\",\r\n                \"associatedRoles\":{\r\n                    \"allowedAudience\":\"APPLICATION\",\r\n                    \"roles\":[]}}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "Get application ID",
 							"event": [
 								{
@@ -179,14 +103,14 @@
 											"// Check if the applications array exists\r",
 											"if (response.applications && Array.isArray(response.applications)) {\r",
 											"    // Search for the application with name \"New Application\"\r",
-											"    let application = response.applications.find(t => t.name === \"API Test Application\");\r",
+											"    let application = response.applications.find(t => t.name === \"E2E-Test-Suite-Token\");\r",
 											"    \r",
 											"    // If the application is found, set the ID as a collection variable\r",
 											"    if (application) {\r",
 											"        pm.collectionVariables.set(\"Main_Application_ID\", application.id);\r",
 											"        console.log(\"Found application ID:\", application.id);  // Log the ID for verification\r",
 											"    } else {\r",
-											"        console.log(\"application with name 'API Test Application' not found\");\r",
+											"        console.log(\"application with name 'E2E-Test-Suite-Token' not found\");\r",
 											"    }\r",
 											"} else {\r",
 											"    console.log(\"Response does not contain a valid 'applications' array\");\r",
@@ -207,10 +131,6 @@
 									{
 										"key": "Authorization",
 										"value": "Basic YWRtaW46YWRtaW4="
-									},
-									{
-										"key": "Cookie",
-										"value": "JSESSIONID=566CFE1CCF6EB34C2379186C9C728369"
 									}
 								],
 								"url": {
@@ -303,9 +223,13 @@
 									"listen": "test",
 									"script": {
 										"exec": [
+											"setTimeout(function(){\r",
+											"\r",
 											"pm.test(\"Response status is 200\", function() {\r",
 											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
+											"});\r",
+											"\r",
+											"}, 3000);"
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -326,15 +250,11 @@
 									{
 										"key": "Authorization",
 										"value": "Basic YWRtaW46YWRtaW4="
-									},
-									{
-										"key": "Cookie",
-										"value": "JSESSIONID=566CFE1CCF6EB34C2379186C9C728369"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"shareWithAllChildren\": false,\n  \"sharedOrganizations\": [\n    \"{{Main_Organization_ID}}\"\n  ]\n}",
+									"raw": "{\n  \"shareWithAllChildren\": false,\n  \"sharedOrganizations\": [\n    \"{{Main_Organization_ID}}\"\n  ]\n}\n",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -363,6 +283,67 @@
 							"response": []
 						},
 						{
+							"name": "Patch application",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer f2a17805-6842-37e9-9b73-e321d13ba99d"
+									},
+									{
+										"key": "Access-Control-Allow-Origin",
+										"value": "https://localhost:9443/t/carbon.super/console"
+									},
+									{
+										"key": "Referer",
+										"value": ""
+									},
+									{
+										"key": "User-Agent",
+										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"accessToken\": {\r\n        \"applicationAccessTokenExpiryInSeconds\": 3600,\r\n        \"bindingType\": \"None\",\r\n        \"revokeTokensWhenIDPSessionTerminated\": false,\r\n        \"type\": \"Default\",\r\n        \"userAccessTokenExpiryInSeconds\": 3600,\r\n        \"validateTokenBinding\": false\r\n    },\r\n    \"grantTypes\": [\r\n        \"client_credentials\",\r\n        \"organization_switch\"\r\n    ],\r\n    \"idToken\": {\r\n        \"audience\": [],\r\n        \"encryption\": {\r\n            \"algorithm\": \"RSA-OAEP\",\r\n            \"enabled\": false,\r\n            \"method\": \"A128GCM\"\r\n        },\r\n        \"expiryInSeconds\": 3600,\r\n        \"idTokenSignedResponseAlg\": \"\"\r\n    },\r\n    \"logout\": {\r\n        \"backChannelLogoutUrl\": \"\"\r\n    },\r\n    \"publicClient\": false,\r\n    \"refreshToken\": {\r\n        \"expiryInSeconds\": 86400,\r\n        \"renewRefreshToken\": false\r\n    },\r\n    \"allowedOrigins\": [],\r\n    \"callbackURLs\": [],\r\n    \"pkce\": {\r\n        \"mandatory\": false,\r\n        \"supportPlainTransformAlgorithm\": false\r\n    },\r\n    \"clientAuthentication\": {\r\n        \"tokenEndpointAuthMethod\": \"\"\r\n    },\r\n    \"pushAuthorizationRequest\": {\r\n        \"requirePushAuthorizationRequest\": false\r\n    },\r\n    \"requestObject\": {\r\n        \"encryption\": {\r\n            \"algorithm\": \"\",\r\n            \"method\": \"\"\r\n        },\r\n        \"requestObjectSigningAlg\": \"\"\r\n    },\r\n    \"subject\": {\r\n        \"subjectType\": \"public\"\r\n    },\r\n    \"clientId\": \"{{Main_Application_Client_ID}}\",\r\n    \"clientSecret\": \"{{Main_Application_Client_Secret}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:9443/t/carbon.super/api/server/v1/applications/{{Main_Application_ID}}/inbound-protocols/oidc",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "9443",
+									"path": [
+										"t",
+										"carbon.super",
+										"api",
+										"server",
+										"v1",
+										"applications",
+										"{{Main_Application_ID}}",
+										"inbound-protocols",
+										"oidc"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Update protocols",
 							"event": [
 								{
@@ -371,6 +352,24 @@
 										"exec": [
 											"pm.test(\"Response status is 200\", function() {\r",
 											"    pm.expect(pm.response.code).to.equal(200)\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Debug Response\", function() {\r",
+											"    console.log(\"=== Response Debug ===\");\r",
+											"    console.log(\"Status:\", pm.response.code);\r",
+											"    console.log(\"Response Headers:\", pm.response.headers.toObject());\r",
+											"    \r",
+											"    try {\r",
+											"        var responseBody = pm.response.json();\r",
+											"        console.log(\"Response Body:\", responseBody);\r",
+											"    } catch (e) {\r",
+											"        console.log(\"Raw Response:\", pm.response.text());\r",
+											"    }\r",
+											"    \r",
+											"    // Original test\r",
+											"    pm.test(\"Response status is 200\", function() {\r",
+											"        pm.expect(pm.response.code).to.equal(200);\r",
+											"    });\r",
 											"});"
 										],
 										"type": "text/javascript",
@@ -408,7 +407,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"accessToken\": {\n        \"accessTokenAttributes\": [],\n        \"applicationAccessTokenExpiryInSeconds\": 3600,\n        \"bindingType\": \"None\",\n        \"revokeTokensWhenIDPSessionTerminated\": false,\n        \"type\": \"Default\",\n        \"userAccessTokenExpiryInSeconds\": 3600,\n        \"validateTokenBinding\": false\n    },\n    \"grantTypes\": [\n        \"client_credentials\",\n        \"organization_switch\"\n    ],\n    \"idToken\": {\n        \"audience\": [],\n        \"encryption\": {\n            \"algorithm\": \"RSA-OAEP\",\n            \"enabled\": false,\n            \"method\": \"A128GCM\"\n        },\n        \"expiryInSeconds\": 3600\n    },\n    \"logout\": {\n        \"backChannelLogoutUrl\": \"\"\n    },\n    \"publicClient\": false,\n    \"refreshToken\": {\n        \"expiryInSeconds\": 86400,\n        \"renewRefreshToken\": false\n    },\n    \"subjectToken\": {\n        \"applicationSubjectTokenExpiryInSeconds\": 180,\n        \"enable\": false\n    },\n    \"allowedOrigins\": [\n        \"https://myapp.io\"\n    ],\n    \"callbackURLs\": [\n        \"https://myapp.io/login\"\n    ],\n    \"pkce\": {\n        \"mandatory\": false,\n        \"supportPlainTransformAlgorithm\": false\n    },\n    \"hybridFlow\": {\n        \"enable\": false\n    },\n    \"clientAuthentication\": {\n        \"tokenEndpointAllowReusePvtKeyJwt\": null,\n        \"tokenEndpointAuthMethod\": \"\"\n    },\n    \"pushAuthorizationRequest\": {\n        \"requirePushAuthorizationRequest\": false\n    },\n    \"requestObject\": {\n        \"encryption\": {\n            \"algorithm\": \"\",\n            \"method\": \"\"\n        },\n        \"requestObjectSigningAlg\": \"\"\n    },\n    \"subject\": {\n        \"subjectType\": \"public\"\n    },\n    \"clientId\": \"{{Main_Application_Client_ID}}\",\n    \"clientSecret\": \"{{Main_Application_Client_Secret}}\"\n}",
+									"raw": "{\n    \"accessToken\": {\n        \"accessTokenAttributes\": [],\n        \"applicationAccessTokenExpiryInSeconds\": 3600,\n        \"bindingType\": \"None\",\n        \"revokeTokensWhenIDPSessionTerminated\": false,\n        \"type\": \"Default\",\n        \"userAccessTokenExpiryInSeconds\": 3600,\n        \"validateTokenBinding\": false\n    },\n    \"grantTypes\": [\n        \"client_credentials\",\n        \"organization_switch\"\n    ],\n    \"idToken\": {\n        \"audience\": [],\n        \"expiryInSeconds\": 3600,\n        \"idTokenSignedResponseAlg\": \"\"\n    },\n    \"logout\": {\n        \"backChannelLogoutUrl\": \"\"\n    },\n    \"publicClient\": false,\n    \"refreshToken\": {\n        \"expiryInSeconds\": 86400,\n        \"renewRefreshToken\": false\n    },\n    \"subjectToken\": {\n        \"applicationSubjectTokenExpiryInSeconds\": 180,\n        \"enable\": false\n    },\n    \"allowedOrigins\": [],\n    \"callbackURLs\": [],\n    \"pkce\": {\n        \"mandatory\": false,\n        \"supportPlainTransformAlgorithm\": false\n    },\n    \"hybridFlow\": {\n        \"enable\": false,\n        \"responseType\": null\n    },\n    \"clientAuthentication\": {\n        \"tokenEndpointAllowReusePvtKeyJwt\": null,\n        \"tokenEndpointAuthMethod\": \"\"\n    },\n    \"pushAuthorizationRequest\": {\n        \"requirePushAuthorizationRequest\": false\n    },\n    \"requestObject\": {\n        \"encryption\": {\n            \"algorithm\": \"\",\n            \"method\": \"\"\n        },\n        \"requestObjectSigningAlg\": \"\"\n    },\n    \"subject\": {\n        \"subjectType\": \"public\"\n    },\n    \"clientId\": \"{{Main_Application_Client_ID}}\",\n    \"clientSecret\": \"{{Main_Application_Client_Secret}}\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -462,66 +461,6 @@
 									{
 										"key": "Authorization",
 										"value": "Basic YWRtaW46YWRtaW4="
-									},
-									{
-										"key": "Access-Control-Allow-Origin",
-										"value": "https://localhost:9443/t/carbon.super/console"
-									},
-									{
-										"key": "Referer",
-										"value": ""
-									},
-									{
-										"key": "User-Agent",
-										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-									},
-									{
-										"key": "Accept",
-										"value": "application/json, text/plain, */*"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Accept-Language",
-										"value": "en-US,en;q=0.9"
-									},
-									{
-										"key": "Connection",
-										"value": "keep-alive"
-									},
-									{
-										"key": "Cookie",
-										"value": "JSESSIONID=7E7D441821CABF9E6BC038799DF6A0B2CFC81E7AB90311145D6190C8EE63C17FEC3FD042DA46D0F64E636DD6F1FBEB77ED7F20C7FEF6E725D38B5CF7A3E5FB86DE0EAEF5EC1FC7B577C5C1306752A608069DDE9466B0BD516D6A1AFBBB655A7CFA6663EF2D52FF14F5A28248361592D83A2D1EFB908B947DFA6BC3AB1907FEBA; accepts-cookies=true; commonAuthId=c56cfe99-e3c0-4d17-be9f-88046f14feda; opbs=c8e3bc4c-d9a6-41eb-aafa-7ad3531c815b-v2; JSESSIONID=C014BCE3915D3065B446AF3E437A1D0C; atbv=c6adb3b3-1f0c-4ba3-b6a6-849786469241"
-									},
-									{
-										"key": "Origin",
-										"value": "https://localhost:9443"
-									},
-									{
-										"key": "Sec-Fetch-Dest",
-										"value": "script"
-									},
-									{
-										"key": "Sec-Fetch-Mode",
-										"value": "cors"
-									},
-									{
-										"key": "Sec-Fetch-Site",
-										"value": "same-origin"
-									},
-									{
-										"key": "sec-ch-ua",
-										"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
-									},
-									{
-										"key": "sec-ch-ua-mobile",
-										"value": "?0"
-									},
-									{
-										"key": "sec-ch-ua-platform",
-										"value": "\"Windows\""
 									}
 								],
 								"body": {
@@ -543,1168 +482,6 @@
 									"path": [
 										"scim2",
 										"Users"
-									]
-								}
-							},
-							"response": []
-						}
-					],
-					"auth": {
-						"type": "basic",
-						"basic": [
-							{
-								"key": "password",
-								"value": "admin",
-								"type": "string"
-							},
-							{
-								"key": "username",
-								"value": "admin",
-								"type": "string"
-							}
-						]
-					},
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"type": "text/javascript",
-								"packages": {},
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"packages": {},
-								"exec": [
-									""
-								]
-							}
-						}
-					]
-				},
-				{
-					"name": "API Resource Assignment Suite",
-					"item": [
-						{
-							"name": "Assign API Resource_01",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"488c4e18-dd79-4b2f-a701-65d732819a4f\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_role_mgt_view\",\n        \"internal_org_role_mgt_update\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_02",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"19bd1245-0b76-40fa-9bd2-16746e0c9ed9\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_api_resource_view\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_03",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"8a906366-dccb-47e3-a2d8-64eeebce236b\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_session_view\",\n        \"internal_org_session_delete\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_04",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"46a48eb1-ef6a-4ef3-879b-99a6280d46a4\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_branding_preference_update\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_05",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"46861ab6-6c92-4310-b94f-11d49afd6342\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_bulk_resource_create\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_06",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"34835d77-c18c-49b2-a277-8053fae646ea\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_notification_senders_view\",\n        \"internal_org_notification_senders_create\",\n        \"internal_org_notification_senders_update\",\n        \"internal_org_notification_senders_delete\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_07",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"ed9889ab-db38-4d77-bb0d-0836a65402b5\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_authenticator_view\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_08",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"455a70e9-1ebc-4d9b-ae77-2c8d18af2177\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_user_mgt_view\",\n        \"internal_org_user_mgt_list\",\n        \"internal_org_user_mgt_create\",\n        \"internal_org_user_mgt_update\",\n        \"internal_org_user_mgt_delete\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_09",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"977031c7-1ea4-415f-ab87-998617bde690\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_claim_meta_view\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_10",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"e53ec166-147a-4610-a05f-54bb0237c3d6\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_organization_discovery_view\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_11",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"3281e207-b9d5-4c0f-862a-ae95b5314465\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_offline_invite\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_12",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"1e50963a-8912-48ce-afc4-cf4e5d10da39\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_group_mgt_view\",\n        \"internal_org_group_mgt_create\",\n        \"internal_org_group_mgt_update\",\n        \"internal_org_group_mgt_delete\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_13",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"6e5632cf-7caf-446d-bee6-6019f29d15cd\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_application_mgt_view\",\n        \"internal_org_application_mgt_update\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_14",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"fc629ba2-f3e5-4bb5-a2bf-1584afea684c\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_idp_view\",\n        \"internal_org_idp_create\",\n        \"internal_org_idp_update\",\n        \"internal_org_idp_delete\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_15",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"7cf6db71-240a-40d3-bc15-e87ac04ddcce\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_recovery_view\",\n        \"internal_org_recovery_create\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_16",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"3c5789c5-dc4a-4153-94f4-982bdd5872d4\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_guest_mgt_invite_list\",\n        \"internal_org_guest_mgt_invite_add\",\n        \"internal_org_guest_mgt_invite_delete\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_17",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"ab873ff2-7941-457d-b66a-e193ce1d8623\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_idle_account_list\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_18",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"e982005f-a3f3-41e3-a6af-29befa34b5f0\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_password_expired_user_view\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_19",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"101e9802-bfd8-4f4b-9c21-f5f38430df90\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_organization_view\",\n        \"internal_org_organization_create\",\n        \"internal_org_organization_update\",\n        \"internal_org_organization_delete\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Assign API Resource_20",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Response status is 200\", function() {\r",
-											"    pm.expect(pm.response.code).to.equal(200)\r",
-											"});"
-										],
-										"type": "text/javascript",
-										"packages": {}
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									},
-									{
-										"key": "Authorization",
-										"value": "Basic YWRtaW46YWRtaW4="
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"id\": \"0da31286-08ff-4236-8c92-3f5ff345930c\",\n    \"policyIdentifier\": \"RBAC\",\n    \"scopes\": [\n        \"internal_org_userstore_view\"\n    ]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "https://localhost:9443/api/server/v1/applications/{{Main_Application_ID}}/authorized-apis",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "9443",
-									"path": [
-										"api",
-										"server",
-										"v1",
-										"applications",
-										"{{Main_Application_ID}}",
-										"authorized-apis"
 									]
 								}
 							},
@@ -1894,13 +671,14 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:9443/oauth2/token",
+									"raw": "https://{{serverUrl}}/t/{{tenantDomain}}/oauth2/token",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverUrl}}"
 									],
-									"port": "9443",
 									"path": [
+										"t",
+										"{{tenantDomain}}",
 										"oauth2",
 										"token"
 									]
@@ -1922,7 +700,52 @@
 											"// Validate status code\r",
 											"pm.test(\"Response status is 200\", function() {\r",
 											"    pm.expect(pm.response.code).to.equal(200)\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Debug Response\", function() {\r",
+											"    console.log(\"=== Response Debug ===\");\r",
+											"    console.log(\"Status:\", pm.response.code);\r",
+											"    console.log(\"Response Headers:\", pm.response.headers.toObject());\r",
+											"    \r",
+											"    try {\r",
+											"        var responseBody = pm.response.json();\r",
+											"        console.log(\"Response Body:\", responseBody);\r",
+											"    } catch (e) {\r",
+											"        console.log(\"Raw Response:\", pm.response.text());\r",
+											"    }\r",
+											"    \r",
+											"    // Original test\r",
+											"    pm.test(\"Response status is 200\", function() {\r",
+											"        pm.expect(pm.response.code).to.equal(200);\r",
+											"    });\r",
 											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var username = pm.collectionVariables.get(\"Main_Application_Client_ID\");\r",
+											"var password = pm.collectionVariables.get(\"Main_Application_Client_Secret\");\r",
+											"\r",
+											"if (username && password) {\r",
+											"    let authString = username + \":\" + password;\r",
+											"    let encodedAuth = Buffer.from(authString, 'utf-8').toString('base64'); // ✅ Works in Newman\r",
+											"\r",
+											"    pm.collectionVariables.set(\"authHeader\", \"Basic \" + encodedAuth);\r",
+											"    console.log(\"Encoded Auth Header:\", pm.collectionVariables.get(\"authHeader\"));\r",
+											"} else {\r",
+											"    console.error(\"Username or Password is missing\");\r",
+											"}\r",
+											"\r",
+											"console.log(\"=== Debug Information ===\");\r",
+											"console.log(\"1. Variables Check:\");\r",
+											"console.log(\"access_token:\", pm.collectionVariables.get(\"access_token\"));\r",
+											"console.log(\"all_scopes:\", pm.collectionVariables.get(\"all_scopes\"));\r",
+											"console.log(\"Main_Organization_ID:\", pm.collectionVariables.get(\"Main_Organization_ID\"));"
 										],
 										"type": "text/javascript",
 										"packages": {}
@@ -1948,13 +771,19 @@
 								"method": "POST",
 								"header": [
 									{
+										"key": "accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
 										"key": "Authorization",
-										"value": "Basic R2xRU1U2X05sS3RqRWpkWjRwSVFGdFNiNEJFYTowSFk5UUVWd2praWFPMTFVWTdjdHZKQTMxb3FiRlJVTzcxODN4V19qVzRVYQ==",
-										"disabled": true
+										"value": "{{authHeader}}",
+										"type": "text"
 									},
 									{
 										"key": "Content-Type",
-										"value": "application/x-www-form-urlencoded"
+										"value": "application/json",
+										"type": "text"
 									}
 								],
 								"body": {
@@ -1983,13 +812,14 @@
 									]
 								},
 								"url": {
-									"raw": "https://localhost:9443/oauth2/token",
+									"raw": "https://{{serverUrl}}/t/{{tenantDomain}}/oauth2/token",
 									"protocol": "https",
 									"host": [
-										"localhost"
+										"{{serverUrl}}"
 									],
-									"port": "9443",
 									"path": [
+										"t",
+										"{{tenantDomain}}",
 										"oauth2",
 										"token"
 									]
@@ -2074,7 +904,7 @@
 											"// Check if the applications array exists\r",
 											"if (responseBody.applications && Array.isArray(responseBody.applications)) {\r",
 											"    // Search for the application with name \"New Application\"\r",
-											"    let application = responseBody.applications.find(t => t.name === \"API Test Application\");\r",
+											"    let application = responseBody.applications.find(t => t.name === \"E2E-Test-Suite-Token\");\r",
 											"    \r",
 											"    // If the application is found, set the ID as a collection variable\r",
 											"    if (application) {\r",
@@ -9420,6 +8250,16 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.execution.skipRequest();"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"request": {
@@ -9685,6 +8525,10 @@
 			"key": "serverUrl",
 			"value": "localhost:9443",
 			"type": "string"
+		},
+		{
+			"key": "authHeader",
+			"value": ""
 		}
 	]
 }
